@@ -1,25 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Post } from './front-end-models/post.model';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnChanges {
   loadedPosts = [];
   url = 'https://ng-complete-guide-b5b67.firebaseio.com/posts.json';
   constructor(private http: HttpClient) { }
 
+  ngOnChanges() {
+    this.onFetchPosts();
+  }
 
   ngOnInit() {
     this.onFetchPosts();
   }
 
-  onCreatePost(postData: { title: string; content: string }) {
+  onCreatePost(postData: Post) {
     // Send Http request
     this.http
-      .post(
+      .post<{Post}>(
         this.url,
         postData
       )
@@ -29,20 +33,21 @@ export class AppComponent implements OnInit {
   }
 
   onFetchPosts() {
-    this.http.get(this.url)
+    this.http.get<{[key: string]:Post }>(this.url)
       .pipe(
-        map(responseData => {
-        const postsArray = [];
-        for (const key in responseData) {
-          if (responseData.hasOwnProperty(key)) {
-            postsArray.push({ ...responseData[key], id: key });
+        map((resData) => {
+          console.log('Fetched:', resData);
+          const postsArray = [];
+          for (const key in resData) {
+            postsArray.push({ ...resData[key], id: key });
           }
-        }
-        return postsArray;
-      }))
-      .subscribe(res => {
-      console.log(res);
-    });
+          return postsArray;
+        })
+      )
+      .subscribe(resPonse => {
+        console.log('Array of Posts:', resPonse);
+        this.loadedPosts = resPonse;
+    })
   }
 
   onClearPosts() {

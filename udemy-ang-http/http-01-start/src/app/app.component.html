@@ -49,9 +49,17 @@
       </button>
     </div>
   </div>
-  <div class="row">
+
     <div class="col-xs-12 col-md-6 col-md-offset-3">
-      <p *ngFor="let post of postsArray">{{post.content}}</p>
+      <button class="btn btn-danger btn-lg" *ngIf='loadedPosts.length < 1;' disabled>Sorry, We have No Posts For You</button>
+        <div class="list-group" *ngFor="let post of loadedPosts">
+          <div class="card list-group-item">
+            <h2> {{post.title}}</h2>
+            <h4>{{post.content}}</h4>
+            <p class="text-info">{{post.id}}</p>
+          </div>
+        </div>
+
     </div>
   </div>
-</div>
+

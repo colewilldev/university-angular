@@ -5,3 +5,10 @@
 .row {
   margin: 20px 0;
 }
+.card{
+  background-color: aliceblue;
+  margin:30px;
+  padding:20px;
+  border-radius:3px;
+  box-shadow: 5px 10px rgba(0,0,0,.1);
+}
